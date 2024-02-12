@@ -1,28 +1,63 @@
-$(document).on('click', '.jc-cart-remove', function(e){
-    e.preventDefault();
-    var updates = {};
-    $(this).data('properties').forEach((property, index) => {
-        if (index !=0 ){
-            const variantID = property[1];        
-            const key = $(`.item[data-item-id="${variantID}"]`).data('item-key');
-            console.log(key, "key")
-            updates[key] = 0;
-        }
+// $(document).on('click', '.jc-cart-remove', function(e){
+//     e.preventDefault();
+//     var updates = {};
+//     $(this).data('properties').forEach((property, index) => {
+//         if (index !=0 ){
+//             const variantID = property[1];        
+//             const key = $(`.item[data-item-id="${variantID}"]`).data('item-key');
+//             console.log(key, "key")
+//             updates[key] = 0;
+//         }
        
-    });
-    updates[$(this).closest('.item').data('item-key')] = 0;
-    $.ajax({
-        type: 'POST',
-        url: '/cart/update.js',
-        data: {
-          updates:updates
-        },
-        dataType: 'json', 
-        async:false,  // Be warned, async:false has been deprecated in jQuery for a long time and is not recommended for use. It's generally recommended to use callbacks or promises instead
-        success: function(){window.location.href= '/cart';}
+//     });
+//     updates[$(this).closest('.item').data('item-key')] = 0;
+//     $.ajax({
+//         type: 'POST',
+//         url: '/cart/update.js',
+//         data: {
+//           updates:updates
+//         },
+//         dataType: 'json', 
+//         async:false,  // Be warned, async:false has been deprecated in jQuery for a long time and is not recommended for use. It's generally recommended to use callbacks or promises instead
+//         success: function(){window.location.href= '/cart';}
        
+//     });
+// });
+
+
+$(document).on("click", ".jc-cart-remove", function (e) {
+  e.preventDefault();
+  var updates = {};
+  var properties = $(this).data("properties");
+
+  if (Array.isArray(properties)) {
+    properties.forEach((property, index) => {
+      console.log(property, "here--->");
+      if (index !== 0) {
+        const variantID = property[1];
+        const key = $(`.item[data-item-id="${variantID}"]`).data("item-key");
+        console.log(key, "key");
+        updates[key] = 0;
+      }
     });
+  }
+
+  updates[$(this).closest(".item").data("item-key")] = 0;
+
+  $.ajax({
+    type: "POST",
+    url: "/cart/update.js",
+    data: {
+      updates: updates,
+    },
+    dataType: "json",
+    // Be warned, async: false has been deprecated in jQuery for a long time and is not recommended for use. It's generally recommended to use callbacks or promises instead
+    success: function () {
+      window.location.href = "/cart";
+    },
+  });
 });
+
 
 function changeItem(_this) {
     var updates = {};

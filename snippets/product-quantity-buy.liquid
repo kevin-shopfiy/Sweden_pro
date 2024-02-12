@@ -71,7 +71,7 @@
             </label>
         {% endif %}
 
-        <button class="b button" type="submit" name="add" id="AddToCart" disabled>
+        <button class="bb button" type="submit" name="add" id="AddToCart" disabled>
             {%- if product.template_suffix contains 'preorder' -%}
                 {{ 'products.product.preorder' | t }}
             {%- else -%}
@@ -94,7 +94,7 @@
                         </div>
                         <div class="pallet-price breaking">
                             <span class="title">Pallbrytningskostnad</span>
-                            <span class="sub-price-value breaking-value">{{product.metafields.custom.breaking_price}}</span>
+                            <span class="sub-price-value breaking-value">{{product.metafields.custom.breaking_price}} kr</span>
                         </div>
                     </div>
                     

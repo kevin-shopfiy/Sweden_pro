@@ -5397,7 +5397,8 @@ body.modal-active {
 }
 #page-content .central {
   margin: 0 auto 0;
-  width: {{ block_gutters | times: 2 | plus: reading_column_width }}px;
+  /* width: {{ block_gutters | times: 2 | plus: reading_column_width }}px; */
+  width: 90%;
   max-width: 100%;
   zoom: 1;
 }
@@ -14635,4 +14636,6 @@ body {
 }
 .cart-list .product-list li {
   list-style: none;
+  display: flex;
+  align-items: center;
 }

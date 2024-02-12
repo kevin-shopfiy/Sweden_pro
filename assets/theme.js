@@ -7124,9 +7124,13 @@ function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Obj
     // addToCart Button
     $('.product-detail__form__options--with-calculated-quantity #AddToCart').prop('disabled', true);
     
+
+
+    // custom-functionality
+    
     // pallet
     $(document).on('keyup', '.quantity-wrapper [name=pallet]', function() {  
-      console.log('pallet')  
+      console.log('pallet_keyup')  
       let $unit = parseInt($(this).data('limit'));
       let $ratio = $(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="ratio"]');
       let $qty = $(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="quantity"]');
@@ -7168,9 +7172,14 @@ function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Obj
           $('.price-pallet').find('.breaking').removeClass('remove');
           $('input[data-product="Pallbrytningskostnad"]').val(1);
         }
-  
+        // quantity = 1
+        if ($quantity == 1) {
+          $breaking_price = 0;
+          $pallet_update = 0;
+          $(".sub-price").css("display", "none");
+
+        }
         // pallet
-        console.log($pallet_val);
         let $pallet_update = $pallet_price * $pallet_val;
         $('.price-pallet').find('.pallet-value').html($pallet_update + ' kr');
         $('input[data-product="Returpall"]').val($pallet_val);
@@ -7181,11 +7190,15 @@ function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Obj
         
         $('.price-pallet').find('.theme-money').html($price_format + ' kr');
         $('#product_price').val($price_format);
+        
   
     })
     // pallet
     $(document).on('change', '.quantity-wrapper [name=pallet]', function() {  
-      console.log('pallet') 
+      console.log('pallet_change') 
+      let $breaking_price = 0;
+      $(".breaking").addClass("remove");
+
       let $unit = parseInt($(this).data('limit'));
       let $ratio = $(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="ratio"]');
       let $qty = $(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="quantity"]');
@@ -7196,12 +7209,14 @@ function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Obj
         $qty.val(0);
       } else{
           $qty.val(Math.max(0, parseInt($(this).val()) * $unit) - parseInt(Math.ceil(parseInt($qty.val()) / $unit) * $unit - parseInt($qty.val())));
+          console.log($qty, "qty_pal");
           $ratio.val(Math.max(0, parseFloat(parseInt($qty.val()) / parseFloat($ratio.data('consequent'))).toFixed(2)));
       }
 
         // let $total_price = parseInt($('.price-pallet').find('.price-value').html().slice(0,-8));
         let $pallet_price = parseInt($('.price-pallet').find('.pallet-value').data('pallet-price'));
-        let $breaking_price = parseInt($('.price-pallet').find('.breaking-value').html().slice(0,-2));
+        // let $breaking_price = parseInt($('.price-pallet').find('.breaking-value').html().slice(0,-2));
+
         let $quantity = parseInt($(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="quantity"]').val());
         let $pallet_real = parseFloat($(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="pallet"]').val());
         let $pallet_val = Math.ceil(parseFloat($(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="pallet"]').val()));
@@ -7216,6 +7231,7 @@ function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Obj
         // breaking
         let $remainder = $quantity % $unit;
         if ($remainder == 0) {
+          console.log($remainder, "remainder");
           $('.price-pallet').find('.breaking').addClass('remove');
           $('input[data-product="Pallbrytningskostnad"]').val(0);
           $breaking_price = 0;
@@ -7228,7 +7244,7 @@ function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Obj
         let $pallet_update = $pallet_price * $pallet_val;
         $('.price-pallet').find('.pallet-value').html($pallet_update + ' kr');
         $('input[data-product="Returpall"]').val($pallet_val);
-        // product
+        // product_price
         let $product_price = parseInt($('.price-pallet').find('.theme-money').data('product-price')) / 100;
         let $product_update =parseFloat($product_price * $quantity_real + $breaking_price + $pallet_update).toFixed(2) ;
         let $price_format = Math.round($product_update).toLocaleString("en");
@@ -7285,7 +7301,7 @@ function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Obj
     })
     // product
     $(document).on('change', '.quantity-wrapper [name=quantity]', function() {
-      console.log('pc')
+      console.log('pc-herer')
       let $unit = parseInt($(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="pallet"]').data('limit'));
       let $ratio = $(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="ratio"]');
       let $pallet = $(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="pallet"]');
@@ -7300,11 +7316,16 @@ function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Obj
       let $pallet_val = Math.ceil(parseFloat($(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="pallet"]').val()));
       // let $unit = parseInt($(this).closest('.product-detail__form__options--with-calculated-quantity').find('[name="pallet"]').data('limit'));
 
-      if ($(this).val() == 0 ) {
+      if ($(this).val() == 0) {
         $('.sub-price').css('display', 'none');
         $pallet.val(0);
         $ratio.val(0);
       }
+      // if ($(this).val() == 1 ) {
+      //   $(".sub-price").css("display", "none");
+
+      // }
+
       // breaking
       let $remainder = $quantity % $unit;
       if ($remainder == 0) {
@@ -7322,7 +7343,7 @@ function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Obj
       $('input[data-product="Returpall"]').val($pallet_val);
       // product
       let $product_price = parseInt($('.price-pallet').find('.theme-money').data('product-price')) / 100;
-      let $product_update =parseFloat($product_price * $quantity + $breaking_price + $pallet_update).toFixed(2) ;
+      let $product_update =parseFloat($product_price * $quantity + $breaking_price + $pallet_update).toFixed(2)
       let $price_format = Math.round($product_update).toLocaleString("en");
       $('.price-pallet').find('.theme-money').html($price_format + ' kr');
       $('#product_price').val($price_format);
@@ -7342,7 +7363,6 @@ function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Obj
       }
       return false;
     }, 1000));
-
     
     // ratio
     $(document).on('change', '.ratio-wrapper [name="ratio"]', function () {
@@ -7434,6 +7454,8 @@ function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Obj
       $('#product_price').val($price_format);
       return false;
     });
+
+
 
     /// Redirection dropdowns
     $(document).on('change', 'select.redirecter', function () {
@@ -7648,11 +7670,13 @@ function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Obj
 
 
 // cart 
-setInterval(() => {
-  $('.cart-list li[p-handle="pallbrytningskostnad"] .quantity-and-remove').css('display', 'none');
-  $('.cart-list li[p-handle="returpall-eur-pall"] .quantity-and-remove').css('display', 'none');
-}, 100);
-clearInterval();
+// setInterval(() => {
+//   $('.cart-list li[p-handle="pallbrytningskostnad"] .quantity-and-remove').css('display', 'none');
+//   $('.cart-list li[p-handle="returpall-eur-pall"] .quantity-and-remove').css('display', 'none');
+// }, 100);
+// clearInterval();
+
+
 
 
 
